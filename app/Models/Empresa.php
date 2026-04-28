@@ -37,6 +37,11 @@ class Empresa extends Model
         return $this->hasMany(Producto::class);
     }
 
+    public function categorias(): HasMany
+    {
+        return $this->hasMany(Categoria::class);
+    }
+
     public function esContabilidadFormal(): bool
     {
         return $this->tipo_contabilidad === 'formal';

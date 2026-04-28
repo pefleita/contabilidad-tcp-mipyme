@@ -12,11 +12,16 @@ class ProductoController extends Controller
 {
     public function index(Request $request): View
     {
-        $empresaId = $request->user()->empresa?->id ?? null;
+        $empresa = $request->user()->empresa;
         
-        $productos = Producto::when($empresaId, function ($query) use ($empresaId) {
-            $query->where('empresa_id', $empresaId);
-        })
+        if (!$empresa) {
+            return view('productos.index', [
+                'productos' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
+                'sinEmpresa' => true,
+            ]);
+        }
+        
+        $productos = Producto::where('empresa_id', $empresa->id)
         ->when($request->categoria, function ($query) use ($request) {
             $query->where('categoria_producto', $request->categoria);
         })
@@ -35,8 +40,13 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos'));
     }
 
-    public function create(): View
+    public function create()
     {
+        if (!auth()->user()->empresa) {
+            return redirect()->route('empresa.index')
+                ->with('warning', 'Primero debes registrar los datos de tu empresa para poder agregar productos.');
+        }
+        
         return view('productos.create');
     }
 

@@ -11,6 +11,7 @@
             <p class="text-slate-500">Administra tus productos y servicios</p>
         </div>
         <div class="flex items-center gap-3">
+            @if(!isset($sinEmpresa) || !$sinEmpresa)
             <a href="{{ route('productos.reporte') }}" class="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -29,8 +30,25 @@
                 </svg>
                 Nuevo Producto
             </a>
+            @endif
         </div>
     </div>
+
+    @if(isset($sinEmpresa) && $sinEmpresa)
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-8 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-amber-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h4 class="text-lg font-semibold text-slate-800 mb-2">Necesitas registrar tu empresa</h4>
+        <p class="text-slate-600 mb-4">Para gestionar productos y servicios, primero debes registrar los datos de tu empresa.</p>
+        <a href="{{ route('empresa.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            Registrar Empresa
+        </a>
+    </div>
+    @else
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -191,5 +209,6 @@
         </div>
         @endif
     </div>
+    @endif
 </div>
 @endsection
