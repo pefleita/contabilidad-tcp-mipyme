@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/contabilidad', function () {
         return view('dashboard', ['seccion' => 'Contabilidad']);
     })->middleware('role:contador')->name('contabilidad');
+    
+    Route::resource('productos', ProductoController::class);
+    
+    Route::get('productos/movimiento', [ProductoController::class, 'movimiento'])->name('productos.movimiento');
+    Route::post('productos/movimiento', [ProductoController::class, 'guardarMovimiento'])->name('productos.guardarMovimiento');
+    Route::get('productos/reporte', [ProductoController::class, 'reporteInventario'])->name('productos.reporte');
 });
 
 require __DIR__.'/auth.php';
