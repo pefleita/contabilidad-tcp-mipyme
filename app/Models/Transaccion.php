@@ -7,23 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Categoria extends Model
+class Transaccion extends Model
 {
     use HasFactory;
 
+    protected $table = 'transacciones';
+
     protected $fillable = [
         'empresa_id',
-        'nombre',
+        'categoria_id',
         'tipo',
-        'color',
-        'icono',
-        'es_activo',
+        'monto',
+        'descripcion',
+        'fecha',
+        'metodo_pago',
+        'estado',
     ];
 
     protected function casts(): array
     {
         return [
-            'es_activo' => 'boolean',
+            'monto' => 'decimal:2',
+            'fecha' => 'date',
+            'estado' => 'string',
         ];
     }
 
@@ -32,9 +38,14 @@ class Categoria extends Model
         return $this->belongsTo(Empresa::class);
     }
 
-    public function transacciones(): HasMany
+    public function categoria(): BelongsTo
     {
-        return $this->hasMany(Transaccion::class);
+        return $this->belongsTo(Categoria::class);
+    }
+
+    public function comprobantes(): HasMany
+    {
+        return $this->hasMany(Comprobante::class);
     }
 
     public function esIngreso(): bool
@@ -45,5 +56,15 @@ class Categoria extends Model
     public function esGasto(): bool
     {
         return $this->tipo === 'gasto';
+    }
+
+    public function estaConfirmado(): bool
+    {
+        return $this->estado === 'confirmado';
+    }
+
+    public function estaAnulado(): bool
+    {
+        return $this->estado === 'anulado';
     }
 }

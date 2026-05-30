@@ -10,6 +10,8 @@ class Kardex extends Model
 {
     use HasFactory;
 
+    protected $table = 'kardex';
+
     protected $fillable = [
         'producto_id',
         'tipo_movimiento',

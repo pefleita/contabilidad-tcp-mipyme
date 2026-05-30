@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::post('empresa', [EmpresaController::class, 'store'])->name('empresa.store');
     
     Route::resource('categorias', CategoriaController::class);
+    
+    Route::resource('transacciones', TransaccionController::class)->parameters(['transacciones' => 'transaccion']);
+    Route::post('transacciones/{transaccion}/comprobantes', [TransaccionController::class, 'uploadComprobante'])->name('transacciones.upload-comprobante');
+    Route::delete('transacciones/{transaccion}/comprobantes/{comprobante}', [TransaccionController::class, 'deleteComprobante'])->name('transacciones.delete-comprobante');
 });
 
 require __DIR__.'/auth.php';
