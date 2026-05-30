@@ -174,7 +174,9 @@ class ReporteController extends Controller
         $data = $this->getResumenData($empresa, $anio);
 
         $pdf = Pdf::loadView('reportes.pdf.resumen-anual', compact('data', 'empresa'));
-        return $pdf->download("resumen-anual-{$anio}.pdf");
+        $filename = storage_path("app/resumen-anual-{$anio}.pdf");
+        $pdf->save($filename);
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 
     public function exportResumenExcel(Request $request)
@@ -238,7 +240,9 @@ class ReporteController extends Controller
         $data = $this->getONATData($empresa, $anio);
 
         $pdf = Pdf::loadView('reportes.pdf.onat', compact('data', 'empresa'));
-        return $pdf->download("informe-onat-{$anio}.pdf");
+        $filename = storage_path("app/informe-onat-{$anio}.pdf");
+        $pdf->save($filename);
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 
     private function getResumenData(?Empresa $empresa, int $anio): array

@@ -17,11 +17,11 @@
         .text-rose { color: #e11d48; }
         .font-bold { font-weight: bold; }
         .total-row { background: #f8fafc; font-weight: bold; }
-        .summary { display: flex; justify-content: space-between; margin: 12px 0; }
-        .summary-box { text-align: center; padding: 8px; border: 1px solid #e2e8f0; flex: 1; margin: 0 4px; }
-        .summary-box p { margin: 2px 0; }
-        .summary-box .label { font-size: 8pt; color: #64748b; }
-        .summary-box .value { font-size: 12pt; font-weight: bold; }
+        .summary-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+        .summary-table td { width: 25%; text-align: center; padding: 8px; border: 1px solid #e2e8f0; }
+        .summary-table td p { margin: 2px 0; }
+        .summary-table .label { font-size: 8pt; color: #64748b; }
+        .summary-table .value { font-size: 12pt; font-weight: bold; }
         .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8pt; color: #94a3b8; padding: 10px 0; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
@@ -32,20 +32,28 @@
         <p>Año Fiscal {{ $data['anio'] }}</p>
     </div>
 
-    <div class="summary">
-        <div class="summary-box">
-            <p class="label">Total Ingresos</p>
-            <p class="value text-emerald">${{ number_format($data['totalIngresos'], 2) }}</p>
-        </div>
-        <div class="summary-box">
-            <p class="label">Total Gastos</p>
-            <p class="value text-rose">${{ number_format($data['totalGastos'], 2) }}</p>
-        </div>
-        <div class="summary-box">
-            <p class="label">Balance Anual</p>
-            <p class="value">${{ number_format($data['balanceAnual'], 2) }}</p>
-        </div>
-    </div>
+    <table class="summary-table">
+        <tr>
+            <td>
+                <p class="label">Total Ingresos</p>
+                <p class="value text-emerald">${{ number_format($data['totalIngresos'], 2) }}</p>
+            </td>
+            <td>
+                <p class="label">Total Gastos</p>
+                <p class="value text-rose">${{ number_format($data['totalGastos'], 2) }}</p>
+            </td>
+            <td>
+                <p class="label">Balance Anual</p>
+                <p class="value {{ $data['balanceAnual'] >= 0 ? '' : 'text-rose' }}">${{ number_format($data['balanceAnual'], 2) }}</p>
+            </td>
+            <td>
+                <p class="label">Margen de Ganancia</p>
+                <p class="value {{ $data['totalIngresos'] > 0 && $data['balanceAnual'] >= 0 ? 'text-emerald' : 'text-rose' }}">
+                    {{ $data['totalIngresos'] > 0 ? number_format(($data['balanceAnual'] / $data['totalIngresos']) * 100, 1) : 0 }}%
+                </p>
+            </td>
+        </tr>
+    </table>
 
     <h2>Desglose Mensual</h2>
     <table>
@@ -77,34 +85,41 @@
         </tfoot>
     </table>
 
-    <h2>Ingresos por Categoría</h2>
-    <table>
-        <thead>
-            <tr><th>Categoría</th><th class="text-right">Total</th></tr>
-        </thead>
-        <tbody>
-            @foreach($data['ingresosPorCategoria'] as $item)
-            <tr>
-                <td>{{ $item->categoria->nombre ?? 'Sin categoría' }}</td>
-                <td class="text-right text-emerald">${{ number_format($item->total, 2) }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <h2>Gastos por Categoría</h2>
-    <table>
-        <thead>
-            <tr><th>Categoría</th><th class="text-right">Total</th></tr>
-        </thead>
-        <tbody>
-            @foreach($data['gastosPorCategoria'] as $item)
-            <tr>
-                <td>{{ $item->categoria->nombre ?? 'Sin categoría' }}</td>
-                <td class="text-right text-rose">${{ number_format($item->total, 2) }}</td>
-            </tr>
-            @endforeach
-        </tbody>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="width: 50%; vertical-align: top; padding-right: 8px;">
+                <h2 style="font-size: 12pt; margin-top: 0; margin-bottom: 8px; color: #334155;">Ingresos por Categoría</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 0;">
+                    <thead>
+                        <tr><th style="background: #f1f5f9; text-align: left; padding: 6px 8px; font-size: 9pt; border-bottom: 2px solid #cbd5e1;">Categoría</th><th style="background: #f1f5f9; text-align: right; padding: 6px 8px; font-size: 9pt; border-bottom: 2px solid #cbd5e1;">Total</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data['ingresosPorCategoria'] as $item)
+                        <tr>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt;">{{ $item->categoria->nombre ?? 'Sin categoría' }}</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; text-align: right; color: #059669;">${{ number_format($item->total, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </td>
+            <td style="width: 50%; vertical-align: top; padding-left: 8px;">
+                <h2 style="font-size: 12pt; margin-top: 0; margin-bottom: 8px; color: #334155;">Gastos por Categoría</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 0;">
+                    <thead>
+                        <tr><th style="background: #f1f5f9; text-align: left; padding: 6px 8px; font-size: 9pt; border-bottom: 2px solid #cbd5e1;">Categoría</th><th style="background: #f1f5f9; text-align: right; padding: 6px 8px; font-size: 9pt; border-bottom: 2px solid #cbd5e1;">Total</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data['gastosPorCategoria'] as $item)
+                        <tr>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt;">{{ $item->categoria->nombre ?? 'Sin categoría' }}</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; text-align: right; color: #e11d48;">${{ number_format($item->total, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </td>
+        </tr>
     </table>
 
     <div class="footer">
