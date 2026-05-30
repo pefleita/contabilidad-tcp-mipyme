@@ -414,13 +414,15 @@ class ReporteController extends Controller
             ->where('tipo', 'ingreso')->where('estado', '!=', 'anulado')
             ->whereYear('fecha', $anio)
             ->selectRaw('categoria_id, SUM(monto) as total')
-            ->groupBy('categoria_id')->with('categoria')->get();
+            ->groupBy('categoria_id')->with('categoria')
+            ->orderBy('total', 'desc')->get();
 
         $gastosPorCategoria = Transaccion::where('empresa_id', $empresa->id)
             ->where('tipo', 'gasto')->where('estado', '!=', 'anulado')
             ->whereYear('fecha', $anio)
             ->selectRaw('categoria_id, SUM(monto) as total')
-            ->groupBy('categoria_id')->with('categoria')->get();
+            ->groupBy('categoria_id')->with('categoria')
+            ->orderBy('total', 'desc')->get();
 
         $meses = [];
         for ($m = 1; $m <= 12; $m++) {
