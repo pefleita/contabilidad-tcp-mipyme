@@ -38,7 +38,10 @@ class CategoriaController extends Controller
             'tipo' => 'required|in:ingreso,gasto',
             'color' => 'nullable|string|max:20',
             'icono' => 'nullable|string|max:50',
+            'es_activo' => 'nullable|boolean',
         ]);
+
+        $validated['es_activo'] = $request->boolean('es_activo');
 
         $request->user()->empresa?->categorias()->create($validated);
 
