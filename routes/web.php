@@ -43,11 +43,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/generar-desde-transaccion/{transaccion}', [ContabilidadController::class, 'generarDesdeTransaccion'])->name('generar-desde-transaccion');
     });
     
-    Route::resource('productos', ProductoController::class);
-    
     Route::get('productos/movimiento', [ProductoController::class, 'movimiento'])->name('productos.movimiento');
     Route::post('productos/movimiento', [ProductoController::class, 'guardarMovimiento'])->name('productos.guardarMovimiento');
     Route::get('productos/reporte', [ProductoController::class, 'reporteInventario'])->name('productos.reporte');
+
+    Route::resource('productos', ProductoController::class);
     
     Route::get('empresa', [EmpresaController::class, 'index'])->name('empresa.index');
     Route::get('empresa/edit', [EmpresaController::class, 'edit'])->name('empresa.edit');
