@@ -77,11 +77,6 @@ class CategoriaController extends Controller
     {
         $this->authorizeCategoria($categoria);
 
-        if ($categoria->transacciones()->count() > 0) {
-            return redirect()->route('categorias.index')
-                ->with('error', 'No se puede eliminar la categoría porque tiene transacciones asociadas');
-        }
-
         $categoria->delete();
 
         return redirect()->route('categorias.index')

@@ -95,6 +95,38 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                             </a>
+                            <button type="button" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirmar-eliminar-{{ $categoria->id }}')" class="p-1 text-slate-400 hover:text-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+
+                            <x-modal name="confirmar-eliminar-{{ $categoria->id }}" maxWidth="sm" focusable>
+                                <form method="POST" action="{{ route('categorias.destroy', $categoria) }}" class="p-6">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <span class="p-2 bg-red-100 rounded-full">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                            </svg>
+                                        </span>
+                                        <h2 class="text-lg font-semibold text-slate-800">Eliminar categoría</h2>
+                                    </div>
+                                    <p class="text-sm text-slate-600 mb-2">
+                                        ¿Estás seguro de eliminar la categoría <strong>{{ $categoria->nombre }}</strong>?
+                                    </p>
+
+                                    <div class="flex justify-end gap-3">
+                                        <button type="button" x-on:click="$dispatch('close')" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </form>
+                            </x-modal>
                         </div>
                     </td>
                 </tr>
