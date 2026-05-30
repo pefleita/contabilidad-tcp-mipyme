@@ -156,20 +156,68 @@
     </div>
     @endif
 
+    @if($empresa)
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-4">Evolución Mensual</h4>
+            <div class="relative" style="height: 280px;">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-4">Distribución de Ingresos</h4>
+            <div class="relative" style="height: 280px;">
+                <canvas id="incomePieChart"></canvas>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-4">Distribución de Gastos</h4>
+            <div class="relative" style="height: 280px;">
+                <canvas id="expensePieChart"></canvas>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-4">Indicadores</h4>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="p-4 bg-slate-50 rounded-lg text-center">
+                    <p class="text-xs text-slate-500 mb-1">Margen de Ganancia</p>
+                    <p class="text-xl font-bold text-emerald-600" id="margenDisplay">--</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg text-center">
+                    <p class="text-xs text-slate-500 mb-1">Promedio por Transacción</p>
+                    <p class="text-xl font-bold text-slate-800" id="promedioDisplay">--</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <h5 class="text-sm font-medium text-slate-700">Top 5 Ingresos</h5>
+                <div id="topIngresos" class="space-y-2"></div>
+                <h5 class="text-sm font-medium text-slate-700 mt-3">Top 5 Gastos</h5>
+                <div id="topGastos" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <h4 class="text-lg font-semibold text-slate-800 mb-4">Acciones Rápidas</h4>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <a href="{{ route('transacciones.create') }}" class="flex items-center gap-3 p-4 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 <span class="text-sm font-medium text-emerald-800">Nueva Transacción</span>
             </a>
-            <a href="{{ route('productos.reporte') }}" class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
+            <a href="{{ route('reportes.resumen-anual') }}" class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <span class="text-sm font-medium text-slate-800">Ver Reportes</span>
+                <span class="text-sm font-medium text-slate-800">Resumen Anual</span>
+            </a>
+            <a href="{{ route('reportes.informe-onat') }}" class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="text-sm font-medium text-slate-800">Informe ONAT</span>
             </a>
             <a href="{{ route('empresa.index') }}" class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,4 +229,94 @@
         </div>
     </div>
 </div>
+
+@if($empresa)
+@push('scripts')
+<script>
+fetch('{{ route("dashboard.chart-data") }}')
+    .then(r => r.json())
+    .then(data => {
+        const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'];
+
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: data.meses.map(m => m.mes),
+                datasets: [{
+                    label: 'Ingresos',
+                    data: data.meses.map(m => m.ingresos),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16,185,129,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Gastos',
+                    data: data.meses.map(m => m.gastos),
+                    borderColor: '#f43f5e',
+                    backgroundColor: 'rgba(244,63,94,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() } } }
+            }
+        });
+
+        new Chart(document.getElementById('incomePieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.ingresosPorCategoria.map(c => c.categoria),
+                datasets: [{
+                    data: data.ingresosPorCategoria.map(c => c.total),
+                    backgroundColor: colors.slice(0, data.ingresosPorCategoria.length),
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('expensePieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.gastosPorCategoria.map(c => c.categoria),
+                datasets: [{
+                    data: data.gastosPorCategoria.map(c => c.total),
+                    backgroundColor: colors.slice(0, data.gastosPorCategoria.length),
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        document.getElementById('margenDisplay').textContent = data.margenGanancia + '%';
+        document.getElementById('promedioDisplay').textContent = '$' + Number(data.promedioTransaccion).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+        const topIng = data.ingresosPorCategoria.slice(0, 5);
+        const topGas = data.gastosPorCategoria.slice(0, 5);
+
+        document.getElementById('topIngresos').innerHTML = topIng.map(c =>
+            `<div class="flex items-center justify-between text-sm"><span class="text-slate-700">${c.categoria}</span><span class="font-medium text-emerald-600">$${Number(c.total).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>`
+        ).join('') || '<p class="text-sm text-slate-500">Sin datos</p>';
+
+        document.getElementById('topGastos').innerHTML = topGas.map(c =>
+            `<div class="flex items-center justify-between text-sm"><span class="text-slate-700">${c.categoria}</span><span class="font-medium text-rose-600">$${Number(c.total).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>`
+        ).join('') || '<p class="text-sm text-slate-500">Sin datos</p>';
+    });
+</script>
+@endpush
+@endif
 @endsection

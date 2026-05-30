@@ -6,6 +6,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ActivoFijoController;
 use App\Http\Controllers\ContabilidadController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,17 @@ Route::middleware('auth')->group(function () {
     Route::get('activos/depreciacion', [ActivoFijoController::class, 'depreciacion'])->name('activos.depreciacion');
     Route::get('activos/libro', [ActivoFijoController::class, 'libroActivos'])->name('activos.libro');
     Route::resource('activos', ActivoFijoController::class)->parameters(['activos' => 'activo']);
+
+    Route::prefix('reportes')->name('reportes.')->group(function () {
+        Route::get('/resumen-anual', [ReporteController::class, 'resumenAnual'])->name('resumen-anual');
+        Route::get('/informe-onat', [ReporteController::class, 'informeONAT'])->name('informe-onat');
+        Route::get('/resumen-anual/pdf', [ReporteController::class, 'exportResumenPDF'])->name('resumen-anual.pdf');
+        Route::get('/resumen-anual/excel', [ReporteController::class, 'exportResumenExcel'])->name('resumen-anual.excel');
+        Route::get('/informe-onat/pdf', [ReporteController::class, 'exportONATPDF'])->name('informe-onat.pdf');
+        Route::get('/informe-onat/excel', [ReporteController::class, 'exportONATExcel'])->name('informe-onat.excel');
+    });
+
+    Route::get('/api/dashboard/chart-data', [ReporteController::class, 'dashboardData'])->name('dashboard.chart-data');
 });
 
 require __DIR__.'/auth.php';
