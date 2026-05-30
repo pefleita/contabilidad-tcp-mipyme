@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ActivoFijoController;
 use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('transacciones', TransaccionController::class)->parameters(['transacciones' => 'transaccion']);
     Route::post('transacciones/{transaccion}/comprobantes', [TransaccionController::class, 'uploadComprobante'])->name('transacciones.upload-comprobante');
     Route::delete('transacciones/{transaccion}/comprobantes/{comprobante}', [TransaccionController::class, 'deleteComprobante'])->name('transacciones.delete-comprobante');
+
+    Route::get('activos/depreciacion', [ActivoFijoController::class, 'depreciacion'])->name('activos.depreciacion');
+    Route::get('activos/libro', [ActivoFijoController::class, 'libroActivos'])->name('activos.libro');
+    Route::resource('activos', ActivoFijoController::class)->parameters(['activos' => 'activo']);
 });
 
 require __DIR__.'/auth.php';

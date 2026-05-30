@@ -52,6 +52,11 @@ class Empresa extends Model
         return $this->hasMany(CuentaContable::class);
     }
 
+    public function activosFijos(): HasMany
+    {
+        return $this->hasMany(ActivoFijo::class);
+    }
+
     public function esContabilidadFormal(): bool
     {
         return $this->tipo_contabilidad === 'formal';

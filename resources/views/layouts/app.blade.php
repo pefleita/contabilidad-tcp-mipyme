@@ -76,6 +76,16 @@
                     </div>
                 </a>
 
+                <a href="{{ route('activos.index') }}" class="sidebar-link relative group {{ request()->routeIs('activos.*') ? 'active' : '' }}" :class="collapsed ? 'justify-center px-2' : ''">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0l-4-4m4 4l-4 4" />
+                    </svg>
+                    <span :class="collapsed ? 'hidden' : ''" class="text-sm whitespace-nowrap">Activos Fijos</span>
+                    <div x-show="collapsed" class="absolute left-full ml-2 px-2.5 py-1.5 bg-slate-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                        Activos Fijos
+                    </div>
+                </a>
+
                 <a href="#" class="sidebar-link relative group" :class="collapsed ? 'justify-center px-2' : ''">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
