@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,9 +25,21 @@ Route::middleware('auth')->group(function () {
         return view('dashboard', ['seccion' => 'Admin']);
     })->middleware('role:admin')->name('admin');
     
-    Route::get('/contabilidad', function () {
-        return view('dashboard', ['seccion' => 'Contabilidad']);
-    })->middleware('role:contador')->name('contabilidad');
+    Route::prefix('contabilidad')->name('contabilidad.')->group(function () {
+        Route::get('/', [ContabilidadController::class, 'index'])->name('index');
+        Route::get('/create', [ContabilidadController::class, 'create'])->name('create');
+        Route::post('/', [ContabilidadController::class, 'store'])->name('store');
+        Route::get('/{asiento}', [ContabilidadController::class, 'show'])->name('show');
+        Route::get('/{asiento}/edit', [ContabilidadController::class, 'edit'])->name('edit');
+        Route::put('/{asiento}', [ContabilidadController::class, 'update'])->name('update');
+        Route::delete('/{asiento}', [ContabilidadController::class, 'destroy'])->name('destroy');
+        Route::get('/reportes/libro-diario', [ContabilidadController::class, 'libroDiario'])->name('libro-diario');
+        Route::get('/reportes/libro-mayor', [ContabilidadController::class, 'libroMayor'])->name('libro-mayor');
+        Route::get('/reportes/balance-comprobacion', [ContabilidadController::class, 'verificarBalance'])->name('balance-comprobacion');
+        Route::get('/reportes/estado-situacion', [ContabilidadController::class, 'estadoSituacion'])->name('estado-situacion');
+        Route::get('/reportes/estado-rendimiento', [ContabilidadController::class, 'estadoRendimiento'])->name('estado-rendimiento');
+        Route::post('/generar-desde-transaccion/{transaccion}', [ContabilidadController::class, 'generarDesdeTransaccion'])->name('generar-desde-transaccion');
+    });
     
     Route::resource('productos', ProductoController::class);
     

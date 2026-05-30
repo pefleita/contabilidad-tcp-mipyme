@@ -26,6 +26,7 @@
             ->where('tipo', 'ingreso')->where('estado', '!=', 'anulado')
             ->whereYear('fecha', now()->year)->sum('monto');
         $alertaUmbral = $ingresosAnuales > 450000;
+        $requiereFormal = $empresa->requiereContabilidadFormal() && !$empresa->esContabilidadFormal();
     }
 @endphp
 
@@ -98,14 +99,29 @@
         </div>
     </div>
 
-    @if($alertaUmbral)
+    @if($requiereFormal)
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <div>
+                <p class="text-sm font-medium text-red-800">Ingresos anuales superan los CUP 500,000</p>
+                <p class="text-sm text-red-700 mt-1">
+                    Según la Resolución 272/2024, su empresa debe migrar a <strong>Contabilidad Formal</strong>.
+                    <a href="{{ route('empresa.edit') }}" class="underline font-medium hover:text-red-900">Configurar ahora</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+    @elseif($alertaUmbral)
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
         <div class="flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
             <p class="text-sm text-amber-800">
-                ⚠️ Has alcanzado el <strong>{{ number_format(($ingresosAnuales / 500000) * 100, 1) }}%</strong> del umbral de ingresos anuales (CUP 500,000). Considera migrar a contabilidad formal.
+                Has alcanzado el <strong>{{ number_format(($ingresosAnuales / 500000) * 100, 1) }}%</strong> del umbral de ingresos anuales (CUP 500,000). Prepare la migración a contabilidad formal.
             </p>
         </div>
     </div>
