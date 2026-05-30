@@ -61,7 +61,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-slate-500">Total Productos</p>
-                    <p class="text-xl font-bold text-slate-800">{{ $productos->total() }}</p>
+                    <p class="text-xl font-bold text-slate-800">{{ $totalProductos }}</p>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-slate-500">Valor Inventario</p>
-                    <p class="text-xl font-bold text-slate-800">$0.00</p>
+                    <p class="text-xl font-bold text-slate-800">${{ number_format($totalValor, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-slate-500">Bajo Stock</p>
-                    <p class="text-xl font-bold text-red-600">0</p>
+                    <p class="text-xl font-bold text-red-600">{{ $bajoStockCount }}</p>
                 </div>
             </div>
         </div>

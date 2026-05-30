@@ -21,6 +21,12 @@ class ProductoController extends Controller
             ]);
         }
         
+        $todos = Producto::where('empresa_id', $empresa->id)->get();
+        $totalProductos = $todos->count();
+        $totalValor = $todos->sum(fn($p) => $p->existencias * $p->precio_costo);
+        $totalCantidad = $todos->sum('existencias');
+        $bajoStockCount = $todos->filter(fn($p) => $p->estaBajoStock())->count();
+
         $productos = Producto::where('empresa_id', $empresa->id)
         ->when($request->categoria, function ($query) use ($request) {
             $query->where('categoria_producto', $request->categoria);
@@ -37,7 +43,7 @@ class ProductoController extends Controller
         ->orderBy('nombre')
         ->paginate(15);
 
-        return view('productos.index', compact('productos'));
+        return view('productos.index', compact('productos', 'totalProductos', 'totalValor', 'totalCantidad', 'bajoStockCount'));
     }
 
     public function create()
