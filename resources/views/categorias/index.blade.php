@@ -101,7 +101,7 @@
                                 </svg>
                             </button>
 
-                            <x-modal name="confirmar-eliminar-{{ $categoria->id }}" maxWidth="sm" focusable>
+                            <x-modal name="confirmar-eliminar-{{ $categoria->id }}" maxWidth="md" focusable>
                                 <form method="POST" action="{{ route('categorias.destroy', $categoria) }}" class="p-6">
                                     @csrf
                                     @method('DELETE')
