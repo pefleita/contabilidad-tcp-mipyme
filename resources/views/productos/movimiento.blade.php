@@ -169,10 +169,17 @@ function toggleOrigen() {
     }
 }
 
-document.getElementById('producto_id').addEventListener('change', function() {
-    const option = this.options[this.selectedIndex];
-    const existencia = option.getAttribute('data-existencia');
-    document.getElementById('cantidad').max = existencia || '';
+window.addEventListener('load', function() {
+    $('#producto_id').select2({
+        width: '100%',
+        placeholder: 'Buscar producto...'
+    });
+
+    $('#producto_id').on('change', function() {
+        const option = this.options[this.selectedIndex];
+        const existencia = option.getAttribute('data-existencia');
+        document.getElementById('cantidad').max = existencia || '';
+    });
 });
 </script>
 @endsection
